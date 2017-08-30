@@ -66,11 +66,14 @@ public class AI {
         return win;
     }
     
-    private static int alphabeta(int[][] symbols,int alpha,int beta,int player,boolean first){
+    private static int alphabeta(int[][] symbols,int alpha,int beta,int player,boolean first,int depth){
         int idx = 0, v = 0, aux, besti = 0,bestj = 0, nextplayer = player%2+1;
         
         int stateVal = getGameState(symbols);
         
+        if (depth == 0){
+            return 0;
+        }
         if (stateVal!=-2){
             return stateVal;
         }
@@ -81,7 +84,7 @@ public class AI {
                 for (int j=0;j<symbols.length;j++){
                     if (symbols[i][j]==0){
                         symbols[i][j] = player;
-                        aux = alphabeta(symbols,alpha,beta,nextplayer,false);
+                        aux = alphabeta(symbols,alpha,beta,nextplayer,false,depth-1);
                         if (v<aux){
                             v = aux; besti = i; bestj = j;
                         }
@@ -97,7 +100,7 @@ public class AI {
                     for (int j=0;j<symbols.length;j++){
                         if (symbols[i][j]==0){
                         symbols[i][j] = player;
-                        v = Math.min(alphabeta(symbols,alpha,beta,nextplayer,false),v);
+                        v = Math.min(alphabeta(symbols,alpha,beta,nextplayer,false,depth-1),v);
                         symbols[i][j] = 0;
                         beta = Math.min(beta,v);
                         if (beta<=alpha)break;
@@ -111,6 +114,6 @@ public class AI {
     }
     
     public static void makeMove(int[][] symbols){
-        alphabeta(symbols,-1000,1000,2,true);
+        alphabeta(symbols,-1000,1000,2,true,3);
     }
 }
